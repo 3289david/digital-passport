@@ -68,8 +68,8 @@ export function ProfileEditor({ passport, userImage }: ProfileEditorProps) {
       fd.append("avatar", file);
       const res = await fetch("/api/passport/avatar", { method: "POST", body: fd });
       const data = await res.json();
-      if (data.avatarUrl) {
-        setAvatarSrc(data.avatarUrl);
+      if (data.data?.avatarUrl) {
+        setAvatarSrc(data.data.avatarUrl);
       } else {
         setAvatarError(data.error ?? "Upload failed");
       }

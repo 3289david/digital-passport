@@ -81,8 +81,8 @@ function fmt(n: number): string {
 function Section({ title, children, badge }: { title: string; children: React.ReactNode; badge?: React.ReactNode }) {
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xs font-bold uppercase tracking-widest" style={{ color: "#4a506a" }}>{title}</h2>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "#4a506a" }}>{title}</h2>
         {badge}
       </div>
       {children}
@@ -92,9 +92,9 @@ function Section({ title, children, badge }: { title: string; children: React.Re
 
 function StatBox({ label, value, color }: { label: string; value: string | number; color?: string }) {
   return (
-    <div className="flex flex-col items-center gap-0.5 py-3 px-2">
-      <span className="text-lg font-bold mono leading-none" style={{ color: color ?? "#e8eaf4" }}>{value}</span>
-      <span className="text-[10px] uppercase tracking-wider" style={{ color: "#4a506a" }}>{label}</span>
+    <div className="flex flex-col items-center gap-0.5 py-2.5 px-3">
+      <span className="text-base font-bold mono leading-none" style={{ color: color ?? "#e8eaf4" }}>{value}</span>
+      <span className="text-[9px] uppercase tracking-wider mt-0.5" style={{ color: "#4a506a" }}>{label}</span>
     </div>
   );
 }
@@ -193,103 +193,95 @@ export default async function PassportPage({ params }: { params: Promise<{ usern
         </div>
       </nav>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-20 pb-24">
-        <div className="mt-6 flex flex-col gap-5">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-20 pb-16">
+        <div className="mt-4 flex flex-col gap-3">
 
           {/* ── HERO CARD ── */}
           <div className="card overflow-hidden">
-            {/* gradient top bar */}
-            <div style={{ height: 3, background: `linear-gradient(90deg, ${level.color}, #4361ee, #7b2ff7)` }} />
+            <div style={{ height: 2, background: `linear-gradient(90deg, ${level.color}, #4361ee, #7b2ff7)` }} />
 
-            <div className="p-6 sm:p-8">
-              <div className="flex flex-col sm:flex-row gap-6">
+            <div className="p-5 sm:p-6">
+              <div className="flex flex-col sm:flex-row gap-5">
 
-                {/* Avatar */}
-                <div className="shrink-0 flex flex-col items-center gap-3">
+                {/* Avatar + level */}
+                <div className="shrink-0 flex sm:flex-col items-center gap-3">
                   {passport.avatarUrl ? (
-                    <img src={passport.avatarUrl} alt={name} className="rounded-2xl object-cover" style={{ width: 100, height: 100 }} />
+                    <img src={passport.avatarUrl} alt={name} className="rounded-xl object-cover" style={{ width: 80, height: 80 }} />
                   ) : (
-                    <div className="rounded-2xl flex items-center justify-center text-4xl font-black" style={{ width: 100, height: 100, background: "linear-gradient(135deg,#4361ee,#7b2ff7)", color: "#fff", boxShadow: `0 0 32px #4361ee44` }}>
+                    <div className="rounded-xl flex items-center justify-center text-3xl font-black" style={{ width: 80, height: 80, background: "linear-gradient(135deg,#4361ee,#7b2ff7)", color: "#fff" }}>
                       {name[0].toUpperCase()}
                     </div>
                   )}
-                  {/* Level badge */}
-                  <span className="text-xs font-bold px-3 py-1 rounded-full" style={{ background: level.bg, color: level.color, border: `1px solid ${level.color}30`, boxShadow: `0 0 12px ${level.glow}30` }}>
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full" style={{ background: level.bg, color: level.color, border: `1px solid ${level.color}25` }}>
                     {level.label}
                   </span>
                 </div>
 
                 {/* Identity block */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-start gap-3 mb-2">
-                    <h1 className="text-3xl font-black leading-tight" style={{ color: "#e8eaf4" }}>{name}</h1>
+                  <div className="flex flex-wrap items-center gap-2 mb-1">
+                    <h1 className="text-2xl font-bold leading-tight" style={{ color: "#e8eaf4" }}>{name}</h1>
                     {passport.available && (
-                      <span className="mt-1.5 inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full font-medium" style={{ background: "#10b98115", color: "#10b981", border: "1px solid #10b98130" }}>
-                        <span className="rounded-full animate-pulse shrink-0" style={{ width: 5, height: 5, background: "#10b981", display: "inline-block" }} />
-                        {passport.availabilityNote ?? "Open to opportunities"}
+                      <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-medium" style={{ background: "#10b98112", color: "#10b981", border: "1px solid #10b98125" }}>
+                        <span className="rounded-full animate-pulse shrink-0" style={{ width: 4, height: 4, background: "#10b981", display: "inline-block" }} />
+                        {passport.availabilityNote ?? "Open to work"}
                       </span>
                     )}
                   </div>
 
                   {passport.title && (
-                    <p className="text-lg font-medium mb-2" style={{ color: "#8b92a8" }}>{passport.title}</p>
+                    <p className="text-sm mb-2" style={{ color: "#8b92a8" }}>{passport.title}</p>
                   )}
 
-                  {/* Meta row */}
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs mb-3" style={{ color: "#4a506a" }}>
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] mb-2.5" style={{ color: "#4a506a" }}>
                     {passport.location && (
                       <span className="flex items-center gap-1">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
                         {passport.location}
                       </span>
                     )}
                     {passport.website && (
                       <a href={passport.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:underline" style={{ color: "#4361ee" }}>
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
                         {passport.website.replace(/^https?:\/\//, "")}
                       </a>
                     )}
                     {passport.twitterHandle && (
                       <a href={`https://x.com/${passport.twitterHandle.replace("@", "")}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:underline" style={{ color: "#8b92a8" }}>
-                        <XIcon size={11} />
+                        <XIcon size={10} />
                         {passport.twitterHandle}
                       </a>
                     )}
-                    {yearsActive > 0 && <span>{yearsActive}y in open source</span>}
+                    {yearsActive > 0 && <span>{yearsActive}y active</span>}
                   </div>
 
                   {passport.bio && (
-                    <p className="text-sm leading-relaxed mb-4" style={{ color: "#8b92a8", maxWidth: 520 }}>{passport.bio}</p>
+                    <p className="text-xs leading-relaxed mb-3" style={{ color: "#8b92a8", maxWidth: 480 }}>{passport.bio}</p>
                   )}
 
-                  {/* Connected platform pills */}
                   {passport.connections.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-1">
                       {passport.connections.map((c) => (
-                        <span key={c.platform} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs" style={{ background: "#131520", border: "1px solid #1c2035" }}>
+                        <span key={c.platform} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px]" style={{ background: "#131520", border: "1px solid #1c2035" }}>
                           <span style={{ color: PLATFORM_COLORS[c.platform] ?? "#8b92a8" }}>{PLATFORM_ICONS[c.platform] ?? c.platform[0].toUpperCase()}</span>
                           <span className="mono" style={{ color: "#8b92a8" }}>{c.handle}</span>
-                          {c.verified && <span style={{ color: "#10b981" }}><CheckIcon size={9} /></span>}
+                          {c.verified && <span style={{ color: "#10b981" }}><CheckIcon size={8} /></span>}
                         </span>
                       ))}
                     </div>
                   )}
                 </div>
 
-                {/* Trust Score column */}
-                <div className="flex flex-col items-center gap-2 shrink-0">
+                {/* Trust Score */}
+                <div className="flex flex-col items-center gap-1 shrink-0">
                   <TrustScore score={passport.trustScore} />
-                  <p className="text-xs" style={{ color: "#4a506a" }}>
-                    <span className="font-bold mono" style={{ color: "#e8eaf4" }}>{passport.trustScore}</span>
-                    {" "}<span style={{ color: "#4a506a" }}>/ 1000</span>
-                  </p>
-                  <span className="text-[10px] px-2 py-0.5 rounded font-medium" style={{ background: "#4361ee15", color: "#4361ee" }}>AI-verified</span>
+                  <span className="text-xs mono font-bold" style={{ color: "#e8eaf4" }}>{passport.trustScore}<span style={{ color: "#4a506a" }}>/1000</span></span>
                 </div>
               </div>
 
-              {/* ── Stats ribbon ── */}
+              {/* Stats ribbon */}
               {(totalStars > 0 || followers > 0 || totalDownloads > 0 || passport.packages.length > 0 || publicRepos > 0) && (
-                <div className="flex flex-wrap mt-6 pt-5 gap-0" style={{ borderTop: "1px solid #1c2035" }}>
+                <div className="flex flex-wrap mt-4 pt-4 divide-x" style={{ borderTop: "1px solid #1c2035", borderColor: "#1c2035" }}>
                   {totalStars > 0 && <StatBox label="Stars" value={fmt(totalStars)} color="#f0b429" />}
                   {followers > 0 && <StatBox label="Followers" value={fmt(followers)} color="#4361ee" />}
                   {totalDownloads > 0 && <StatBox label="Downloads" value={fmt(totalDownloads)} color="#10b981" />}
@@ -297,32 +289,56 @@ export default async function PassportPage({ params }: { params: Promise<{ usern
                   {publicRepos > 0 && <StatBox label="Repos" value={publicRepos} />}
                   {earnedBadges > 0 && <StatBox label="Badges" value={earnedBadges} color="#f59e0b" />}
                   {verifiedCount > 0 && <StatBox label="Verified" value={verifiedCount} color="#10b981" />}
-                  {yearsActive > 0 && <StatBox label="Years Active" value={`${yearsActive}y`} />}
+                  {yearsActive > 0 && <StatBox label="Years" value={`${yearsActive}y`} />}
                 </div>
               )}
             </div>
           </div>
 
-          {/* ── Passport doc strip ── */}
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 px-1 text-xs mono" style={{ color: "#4a506a" }}>
+          {/* Passport doc strip */}
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 px-1 text-[10px] mono" style={{ color: "#4a506a" }}>
             <span>DGTL PASSPORT</span>
-            <span>{passport.passportNumber.slice(0, 16).toUpperCase()}</span>
-            <span>·</span>
+            <span style={{ color: "#1c2035" }}>·</span>
+            <span>{passport.passportNumber.slice(0, 12).toUpperCase()}</span>
+            <span style={{ color: "#1c2035" }}>·</span>
             <span>ISSUED {new Date(passport.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short" }).toUpperCase()}</span>
-            <span>·</span>
-            {passport.lastSyncedAt && <><span>SYNCED {new Date(passport.lastSyncedAt).toLocaleDateString()}</span><span>·</span></>}
-            <span className="px-1.5 py-0.5 rounded" style={{ background: "#10b98115", color: "#10b981" }}>ACTIVE</span>
+            {passport.lastSyncedAt && <><span style={{ color: "#1c2035" }}>·</span><span>SYNCED {new Date(passport.lastSyncedAt).toLocaleDateString()}</span></>}
+            <span style={{ color: "#1c2035" }}>·</span>
+            <span style={{ color: "#10b981" }}>ACTIVE</span>
           </div>
 
           {/* ── 2-column body ── */}
-          <div className="grid lg:grid-cols-[300px_1fr] gap-5">
+          <div className="grid lg:grid-cols-[280px_1fr] gap-4">
 
             {/* ── SIDEBAR ── */}
-            <aside className="flex flex-col gap-4">
+            <aside className="flex flex-col gap-3">
+
+              {/* Passport document card */}
+              <div className="card p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <PassportLogoIcon size={14} />
+                  <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "#4a506a" }}>Digital Passport</span>
+                </div>
+                <div className="flex flex-col gap-2">
+                  {[
+                    { label: "Holder", value: passport.username },
+                    { label: "Doc No", value: passport.passportNumber.slice(0, 10) },
+                    { label: "Issued", value: new Date(passport.createdAt).toLocaleDateString() },
+                    { label: "Status", value: "Active", valueColor: "#10b981" },
+                    { label: "Level", value: level.label, valueColor: level.color },
+                    { label: "Verifications", value: `${verifiedCount} confirmed` },
+                  ].map(({ label, value, valueColor }) => (
+                    <div key={label} className="flex items-center justify-between">
+                      <span className="text-[11px]" style={{ color: "#4a506a" }}>{label}</span>
+                      <span className="text-[11px] mono" style={{ color: valueColor ?? "#8b92a8" }}>{value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
               {/* Skill Genome */}
               {passport.skills.length > 0 && (
-                <div className="card p-5">
+                <div className="card p-4">
                   <Section title="Skill Genome">
                     <SkillGenome skills={passport.skills.map((s) => ({ ...s, color: s.color ?? undefined, category: s.category ?? undefined }))} />
                   </Section>
@@ -331,10 +347,10 @@ export default async function PassportPage({ params }: { params: Promise<{ usern
 
               {/* Verified Badges */}
               {passport.badges.length > 0 && (
-                <div className="card p-5">
+                <div className="card p-4">
                   <Section title="Badges" badge={
                     earnedBadges > 0
-                      ? <span className="text-xs px-2 py-0.5 rounded" style={{ background: "#f0b42915", color: "#f0b429" }}>{earnedBadges} earned</span>
+                      ? <span className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: "#f0b42915", color: "#f0b429" }}>{earnedBadges} earned</span>
                       : undefined
                   }>
                     <VerifiedBadges badges={passport.badges.map((b) => ({
@@ -348,10 +364,10 @@ export default async function PassportPage({ params }: { params: Promise<{ usern
 
               {/* Identity Verification */}
               {passport.verifications.length > 0 && (
-                <div className="card p-5">
-                  <Section title="Identity Verification" badge={
+                <div className="card p-4">
+                  <Section title="Identity" badge={
                     verifiedCount > 0
-                      ? <span className="text-xs px-2 py-0.5 rounded" style={{ background: "#10b98115", color: "#10b981" }}>{verifiedCount} verified</span>
+                      ? <span className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: "#10b98115", color: "#10b981" }}>{verifiedCount} verified</span>
                       : undefined
                   }>
                     <IdentityVerification items={passport.verifications.map((v) => ({
@@ -366,56 +382,33 @@ export default async function PassportPage({ params }: { params: Promise<{ usern
 
               {/* Developer Visas */}
               {passport.visasReceived.length > 0 && (
-                <div className="card p-5">
+                <div className="card p-4">
                   <Section title="Developer Visas">
                     <div className="flex flex-col gap-2">
                       {passport.visasReceived.map((visa) => (
-                        <div key={visa.id} className="rounded-xl p-3 flex flex-col gap-1" style={{ background: "#131520", border: "1px solid #f0b42925" }}>
-                          <div className="flex items-center gap-2">
-                            <div className="rounded-full shrink-0" style={{ width: 6, height: 6, background: "#f0b429" }} />
-                            <span className="text-xs font-semibold" style={{ color: "#f0b429" }}>{visa.organization.name}</span>
-                            {visa.organization.verified && <CheckIcon size={10} />}
+                        <div key={visa.id} className="rounded-lg p-3 flex flex-col gap-1" style={{ background: "#131520", border: "1px solid #f0b42920" }}>
+                          <div className="flex items-center gap-1.5">
+                            <div className="rounded-full shrink-0" style={{ width: 5, height: 5, background: "#f0b429" }} />
+                            <span className="text-[10px] font-semibold" style={{ color: "#f0b429" }}>{visa.organization.name}</span>
+                            {visa.organization.verified && <CheckIcon size={9} />}
                           </div>
-                          <span className="text-sm font-medium" style={{ color: "#e8eaf4" }}>{visa.title}</span>
-                          {visa.description && <span className="text-xs" style={{ color: "#4a506a" }}>{visa.description}</span>}
-                          <span className="text-xs" style={{ color: "#4a506a" }}>Issued {new Date(visa.issuedAt).toLocaleDateString()}</span>
+                          <span className="text-xs font-medium" style={{ color: "#e8eaf4" }}>{visa.title}</span>
+                          {visa.description && <span className="text-[10px]" style={{ color: "#4a506a" }}>{visa.description}</span>}
+                          <span className="text-[10px]" style={{ color: "#4a506a" }}>Issued {new Date(visa.issuedAt).toLocaleDateString()}</span>
                         </div>
                       ))}
                     </div>
                   </Section>
                 </div>
               )}
-
-              {/* Passport document card */}
-              <div className="rounded-xl p-5" style={{ background: "#0a0c15", border: "1px dashed #1c2035" }}>
-                <div className="flex items-center gap-2 mb-4">
-                  <PassportLogoIcon size={16} />
-                  <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "#4a506a" }}>Digital Passport</span>
-                </div>
-                <div className="flex flex-col gap-2.5">
-                  {[
-                    { label: "Holder", value: passport.username },
-                    { label: "Document No", value: passport.passportNumber.slice(0, 12) },
-                    { label: "Issued", value: new Date(passport.createdAt).toLocaleDateString() },
-                    { label: "Status", value: "Active", valueColor: "#10b981" },
-                    { label: "Trust Level", value: level.label, valueColor: level.color },
-                    { label: "Verifications", value: `${verifiedCount} confirmed` },
-                  ].map(({ label, value, valueColor }) => (
-                    <div key={label} className="flex items-center justify-between">
-                      <span className="text-xs" style={{ color: "#4a506a" }}>{label}</span>
-                      <span className="text-xs mono" style={{ color: valueColor ?? "#8b92a8" }}>{value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </aside>
 
             {/* ── MAIN ── */}
-            <main className="flex flex-col gap-5">
+            <main className="flex flex-col gap-3">
 
               {/* Contribution Timeline */}
               {contributions.length > 0 && (
-                <div className="card p-5">
+                <div className="card p-4">
                   <Section title="Contribution Timeline">
                     <ContributionTimeline data={contributions} />
                   </Section>
@@ -424,7 +417,7 @@ export default async function PassportPage({ params }: { params: Promise<{ usern
 
               {/* Open Source DNA */}
               {languages.length > 0 && (
-                <div className="card p-5">
+                <div className="card p-4">
                   <Section title="Open Source DNA">
                     <OpenSourceDNA languages={languages} />
                   </Section>
@@ -433,11 +426,11 @@ export default async function PassportPage({ params }: { params: Promise<{ usern
 
               {/* Featured Projects */}
               {passport.projects.length > 0 && (
-                <div className="card p-5">
-                  <Section title="Project Passport" badge={
-                    <span className="text-xs mono" style={{ color: "#4a506a" }}>{passport.projects.length} featured</span>
+                <div className="card p-4">
+                  <Section title="Projects" badge={
+                    <span className="text-[10px] mono" style={{ color: "#4a506a" }}>{passport.projects.length} featured</span>
                   }>
-                    <div className="grid md:grid-cols-2 gap-3">
+                    <div className="grid md:grid-cols-2 gap-2.5">
                       {passport.projects.map((p) => (
                         <ProjectCard
                           key={p.id}
@@ -461,23 +454,22 @@ export default async function PassportPage({ params }: { params: Promise<{ usern
 
               {/* Package Portfolio */}
               {passport.packages.length > 0 && (
-                <div className="card p-5">
-                  <Section title="Package Portfolio" badge={
+                <div className="card p-4">
+                  <Section title="Packages" badge={
                     totalDownloads > 0
-                      ? <span className="text-xs mono px-2 py-0.5 rounded" style={{ background: "#10b98115", color: "#10b981" }}>{fmt(totalDownloads)} downloads</span>
+                      ? <span className="text-[10px] mono px-1.5 py-0.5 rounded" style={{ background: "#10b98115", color: "#10b981" }}>{fmt(totalDownloads)} dl</span>
                       : undefined
                   }>
-                    {/* Registry breakdown */}
-                    <div className="flex flex-wrap gap-2 mb-4">
+                    <div className="flex flex-wrap gap-1.5 mb-3">
                       {(["npm", "pypi", "crates", "docker", "maven", "gem", "other"] as const).map((reg) => {
                         const count = passport.packages.filter((p) => p.registry === reg).length;
                         if (!count) return null;
                         const dl = passport.packages.filter((p) => p.registry === reg).reduce((s, p) => s + p.downloads, 0);
                         return (
-                          <div key={reg} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs" style={{ background: "#131520", border: "1px solid #1c2035" }}>
-                            <span>{reg}</span>
-                            <span className="mono" style={{ color: "#8b92a8" }}>{count} pkg{count > 1 ? "s" : ""}</span>
-                            {dl > 0 && <span style={{ color: "#10b981" }}>· {fmt(dl)} dl</span>}
+                          <div key={reg} className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px]" style={{ background: "#131520", border: "1px solid #1c2035" }}>
+                            <span style={{ color: "#8b92a8" }}>{reg}</span>
+                            <span className="mono" style={{ color: "#4a506a" }}>{count}</span>
+                            {dl > 0 && <span style={{ color: "#10b981" }}>· {fmt(dl)}</span>}
                           </div>
                         );
                       })}
@@ -494,7 +486,7 @@ export default async function PassportPage({ params }: { params: Promise<{ usern
 
               {/* Experience */}
               {passport.experiences.length > 0 && (
-                <div className="card p-5">
+                <div className="card p-4">
                   <Section title="Experience">
                     <ExperienceGraph entries={passport.experiences.map((e) => ({
                       year: e.year, title: e.title,
@@ -507,7 +499,7 @@ export default async function PassportPage({ params }: { params: Promise<{ usern
 
               {/* Security Profile */}
               {passport.securityChecks.length > 0 && (
-                <div className="card p-5">
+                <div className="card p-4">
                   <Section title="Security Profile">
                     <SecurityProfile
                       items={passport.securityChecks.map((c) => ({
@@ -520,28 +512,6 @@ export default async function PassportPage({ params }: { params: Promise<{ usern
                   </Section>
                 </div>
               )}
-
-              {/* API endpoints */}
-              <div className="rounded-xl p-5 flex flex-col gap-3" style={{ background: "#0d0f18", border: "1px solid #1c2035" }}>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "#4a506a" }}>Passport API</span>
-                  <span className="text-xs px-2 py-0.5 rounded" style={{ background: "#10b98115", color: "#10b981" }}>Public</span>
-                </div>
-                <div className="grid sm:grid-cols-2 gap-2">
-                  {[
-                    `/api/v1/${passport.username}`,
-                    `/api/v1/${passport.username}/trust`,
-                    `/api/v1/${passport.username}/skills`,
-                    `/api/v1/${passport.username}/projects`,
-                    `/api/v1/${passport.username}/packages`,
-                    `/api/v1/${passport.username}/badges`,
-                  ].map((ep) => (
-                    <div key={ep} className="rounded-lg px-3 py-2 text-xs mono truncate" style={{ background: "#131520", color: "#4361ee" }}>
-                      GET {ep}
-                    </div>
-                  ))}
-                </div>
-              </div>
 
             </main>
           </div>
