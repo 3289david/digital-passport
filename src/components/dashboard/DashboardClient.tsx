@@ -11,9 +11,10 @@ import { ProjectsEditor } from "./ProjectsEditor";
 import { PlatformsEditor } from "./PlatformsEditor";
 import { SiteEditor } from "./SiteEditor";
 import { ApiKeysPanel } from "./ApiKeysPanel";
+import { PackagesEditor } from "./PackagesEditor";
 import { signOut } from "next-auth/react";
 
-type Tab = "overview" | "profile" | "experience" | "skills" | "projects" | "platforms" | "site" | "api";
+type Tab = "overview" | "profile" | "experience" | "skills" | "projects" | "packages" | "platforms" | "site" | "api";
 
 interface DashboardClientProps {
   passport: {
@@ -33,8 +34,8 @@ interface DashboardClientProps {
     lastSyncedAt: Date | null;
     passportNumber: string;
     connections: { platform: string; handle: string; verified: boolean }[];
-    projects: { id: string; name: string; fullName: string | null; stars: number; language: string | null; languageColor: string | null; featured: boolean; description: string | null; healthScore: number; contributors: number; startedAt: string | null; license: string | null; downloads: number | null; url: string | null }[];
-    packages: { id: string; name: string; registry: string; version: string | null; downloads: number }[];
+    projects: { id: string; name: string; fullName: string | null; stars: number; language: string | null; languageColor: string | null; featured: boolean; description: string | null; healthScore: number; contributors: number; startedAt: string | null; license: string | null; downloads: number | null; url: string | null; platform: string }[];
+    packages: { id: string; name: string; registry: string; version: string | null; downloads: number; description: string | null; url: string | null }[];
     skills: { id: string; name: string; score: number; color: string | null }[];
     badges: { type: string; label: string; earned: boolean; earnedAt: Date | null }[];
     verifications: { type: string; level: string; verified: boolean }[];
@@ -53,6 +54,7 @@ const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
   { id: "experience", label: "Experience", icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg> },
   { id: "skills", label: "Skills", icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> },
   { id: "projects", label: "Projects", icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg> },
+  { id: "packages", label: "Packages", icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg> },
   { id: "platforms", label: "Platforms", icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg> },
   { id: "site", label: "My Site", icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg> },
   { id: "api", label: "API Keys", icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></svg> },
@@ -186,6 +188,7 @@ export function DashboardClient({ passport, user }: DashboardClientProps) {
             {tab === "experience" && <ExperienceEditor experiences={passport.experiences} />}
             {tab === "skills" && <SkillsEditor skills={passport.skills} />}
             {tab === "projects" && <ProjectsEditor projects={passport.projects} />}
+            {tab === "packages" && <PackagesEditor packages={passport.packages} />}
             {tab === "platforms" && <PlatformsEditor connections={passport.connections} />}
             {tab === "site" && <SiteEditor site={passport.site} username={passport.username} />}
             {tab === "api" && <ApiKeysPanel apiKeys={passport.apiKeys} username={passport.username} />}

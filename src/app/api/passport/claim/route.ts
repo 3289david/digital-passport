@@ -22,15 +22,12 @@ export async function POST(req: NextRequest) {
 
   const { username } = parsed.data;
 
-  // Reserved usernames
   const RESERVED = ["admin", "api", "login", "logout", "signup", "dashboard", "onboarding", "settings", "teams", "visa", "recruiter", "about", "blog", "docs", "status", "help", "support"];
   if (RESERVED.includes(username)) return err("This username is reserved");
 
-  // Check if user already has a passport
   const existing = await db.passport.findUnique({ where: { userId: session.user.id } });
   if (existing) return err("You already have a passport");
 
-  // Check if username is taken
   const taken = await db.passport.findUnique({ where: { username } });
   if (taken) return err("Username is already taken");
 
@@ -43,7 +40,7 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  // Seed default badges as unearned
+  // Seed default badges
   const BADGE_DEFS = [
     { type: "oss_maintainer", label: "OSS Maintainer" },
     { type: "security_expert", label: "Security Expert" },
@@ -68,5 +65,39 @@ export async function POST(req: NextRequest) {
   // Create default site
   await db.passportSite.create({ data: { passportId: passport.id } });
 
-  return ok({ username: passport.username, passportId: passport.id }, 201);
+  // Auto-link GitHub if signed in with GitHub OAuth
+  let githubHandle: string | null = null;
+  try {
+    const githubAccount = await db.account.findFirst({
+      where: { userId: session.user.id, provider: "github" },
+      select: { access_token: true },
+    });
+    if (githubAccount?.access_token) {
+      const ghResp = await fetch("https://api.github.com/user", {
+        headers: {
+          Authorization: `Bearer ${githubAccount.access_token}`,
+          "User-Agent": "digital-passport/1.0",
+          Accept: "application/vnd.github+json",
+        },
+      });
+      if (ghResp.ok) {
+        const ghUser = await ghResp.json();
+        githubHandle = ghUser.login as string;
+        await db.connectedAccount.upsert({
+          where: { passportId_platform: { passportId: passport.id, platform: "github" } },
+          update: { handle: githubHandle, verified: true },
+          create: { passportId: passport.id, platform: "github", handle: githubHandle, verified: true, public: true },
+        });
+        await db.verification.upsert({
+          where: { passportId_type: { passportId: passport.id, type: "github" } },
+          update: { verified: true, verifiedAt: new Date() },
+          create: { passportId: passport.id, type: "github", level: "basic", verified: true, verifiedAt: new Date() },
+        });
+      }
+    }
+  } catch {
+    // Non-fatal: GitHub auto-link failed, user can connect manually
+  }
+
+  return ok({ username: passport.username, passportId: passport.id, githubHandle }, 201);
 }

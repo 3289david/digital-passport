@@ -13,6 +13,8 @@ export default function OnboardingPage() {
   const [usernameError, setUsernameError] = useState("");
   const [claiming, setClaiming] = useState(false);
   const [claimError, setClaimError] = useState("");
+  const [githubHandle, setGithubHandle] = useState<string | null>(null);
+  const [syncing, setSyncing] = useState(false);
 
   async function checkUsername(val: string) {
     setUsername(val);
@@ -47,6 +49,7 @@ export default function OnboardingPage() {
         setClaimError(data.error);
         return;
       }
+      setGithubHandle(data.data?.githubHandle ?? null);
       setStep(2);
     } catch {
       setClaimError("Something went wrong");
@@ -55,8 +58,13 @@ export default function OnboardingPage() {
     }
   }
 
-  async function triggerSync() {
-    await fetch("/api/passport/sync", { method: "POST" });
+  async function syncAndContinue() {
+    setSyncing(true);
+    try {
+      await fetch("/api/passport/sync", { method: "POST" });
+    } finally {
+      setSyncing(false);
+    }
     router.push("/dashboard");
   }
 
@@ -71,7 +79,7 @@ export default function OnboardingPage() {
         <div className="flex flex-col items-center gap-3 mb-8">
           <PassportLogoIcon size={44} />
           <h1 className="text-2xl font-bold" style={{ color: "#e8eaf4" }}>
-            {step === 1 ? "Claim your Passport ID" : "Connect GitHub"}
+            {step === 1 ? "Claim your Passport ID" : "GitHub connected"}
           </h1>
           <div className="flex items-center gap-2">
             {[1, 2].map((s) => (
@@ -133,17 +141,11 @@ export default function OnboardingPage() {
                     </span>
                   )}
                 </div>
-                {usernameError && (
-                  <p className="text-xs" style={{ color: "#ef4444" }}>{usernameError}</p>
-                )}
-                {usernameOk && (
-                  <p className="text-xs" style={{ color: "#10b981" }}>Available</p>
-                )}
+                {usernameError && <p className="text-xs" style={{ color: "#ef4444" }}>{usernameError}</p>}
+                {usernameOk && <p className="text-xs" style={{ color: "#10b981" }}>Available</p>}
               </div>
 
-              {claimError && (
-                <p className="text-sm" style={{ color: "#ef4444" }}>{claimError}</p>
-              )}
+              {claimError && <p className="text-sm" style={{ color: "#ef4444" }}>{claimError}</p>}
 
               <button
                 onClick={claimUsername}
@@ -151,49 +153,65 @@ export default function OnboardingPage() {
                 className="w-full py-3 rounded-xl font-semibold text-sm transition-all disabled:opacity-40"
                 style={{ background: "#4361ee", color: "#fff" }}
               >
-                {claiming ? "Claiming..." : "Claim Passport"}
+                {claiming ? "Setting up passport..." : "Claim Passport"}
               </button>
             </>
           )}
 
           {step === 2 && (
             <>
-              <p className="text-sm leading-relaxed" style={{ color: "#8b92a8" }}>
-                Connect GitHub to auto-sync your repositories, compute your Trust Score, and build your Skill Genome. We request read-only access.
-              </p>
-
-              <div className="flex flex-col gap-3">
-                <div
-                  className="flex items-center gap-3 rounded-xl p-4"
-                  style={{ background: "#131520", border: "1px solid #1c2035" }}
-                >
+              {githubHandle ? (
+                <div className="flex items-center gap-3 rounded-xl p-4" style={{ background: "#10b98110", border: "1px solid #10b98130" }}>
+                  <GitHubIcon size={20} />
+                  <div className="flex-1">
+                    <div className="text-sm font-medium" style={{ color: "#e8eaf4" }}>GitHub auto-linked</div>
+                    <div className="text-xs mono" style={{ color: "#10b981" }}>@{githubHandle}</div>
+                  </div>
+                  <CheckIcon size={16} />
+                </div>
+              ) : (
+                <div className="flex items-center gap-3 rounded-xl p-4" style={{ background: "#131520", border: "1px solid #1c2035" }}>
                   <GitHubIcon size={20} />
                   <div className="flex-1">
                     <div className="text-sm font-medium" style={{ color: "#e8eaf4" }}>GitHub</div>
-                    <div className="text-xs" style={{ color: "#4a506a" }}>Read-only: repos, profile, languages</div>
+                    <div className="text-xs" style={{ color: "#4a506a" }}>Add your handle in Platforms after setup</div>
                   </div>
-                  <span className="text-xs px-2 py-0.5 rounded" style={{ background: "#4361ee18", color: "#4361ee" }}>
-                    OAuth
-                  </span>
                 </div>
-              </div>
+              )}
+
+              <p className="text-sm leading-relaxed" style={{ color: "#8b92a8" }}>
+                {githubHandle
+                  ? "Your GitHub account is linked. Click below to sync your repos, compute your Trust Score, and build your Skill Genome."
+                  : "You can connect platforms any time from your dashboard to sync repos and compute your Trust Score."}
+              </p>
 
               <div className="flex flex-col gap-3">
                 <button
-                  onClick={triggerSync}
-                  className="w-full py-3 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2"
+                  onClick={syncAndContinue}
+                  disabled={syncing}
+                  className="w-full py-3 rounded-xl font-semibold text-sm transition-all disabled:opacity-40 flex items-center justify-center gap-2"
                   style={{ background: "#4361ee", color: "#fff" }}
                 >
-                  <GitHubIcon size={16} />
-                  Sync GitHub and continue
+                  {syncing ? (
+                    <>
+                      <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="12" cy="12" r="10" strokeOpacity="0.3"/><path d="M12 2a10 10 0 0 1 10 10"/>
+                      </svg>
+                      Starting sync...
+                    </>
+                  ) : (
+                    <>{githubHandle ? "Sync GitHub and open dashboard" : "Go to dashboard"}</>
+                  )}
                 </button>
-                <button
-                  onClick={() => router.push("/dashboard")}
-                  className="w-full py-2 text-sm transition-all"
-                  style={{ color: "#4a506a" }}
-                >
-                  Skip for now
-                </button>
+                {githubHandle && (
+                  <button
+                    onClick={() => router.push("/dashboard")}
+                    className="w-full py-2 text-sm transition-all"
+                    style={{ color: "#4a506a" }}
+                  >
+                    Skip sync for now
+                  </button>
+                )}
               </div>
             </>
           )}

@@ -16,10 +16,31 @@ export async function syncPassport(passportId: string): Promise<void> {
   });
 
   try {
-    // Get the GitHub connection
-    const githubConn = await db.connectedAccount.findFirst({
+    // OAuth token lives in the Account table (PrismaAdapter stores it there, not in ConnectedAccount)
+    const passportData = await db.passport.findUnique({ where: { id: passportId }, select: { userId: true } });
+    const oauthAccount = passportData
+      ? await db.account.findFirst({ where: { userId: passportData.userId, provider: "github" }, select: { access_token: true } })
+      : null;
+    const accessToken = oauthAccount?.access_token ?? undefined;
+
+    // Get the GitHub connection — auto-create it from OAuth if missing
+    let githubConn = await db.connectedAccount.findFirst({
       where: { passportId, platform: "github" },
     });
+
+    if (!githubConn && accessToken) {
+      try {
+        const ghResp = await fetch("https://api.github.com/user", {
+          headers: { Authorization: `Bearer ${accessToken}`, "User-Agent": "digital-passport/1.0", Accept: "application/vnd.github+json" },
+        });
+        if (ghResp.ok) {
+          const ghUser = await ghResp.json();
+          githubConn = await db.connectedAccount.create({
+            data: { passportId, platform: "github", handle: ghUser.login as string, verified: true, public: true },
+          });
+        }
+      } catch {}
+    }
 
     if (!githubConn) {
       await db.passport.update({
@@ -33,15 +54,8 @@ export async function syncPassport(passportId: string): Promise<void> {
     const packages = await db.package.findMany({ where: { passportId } });
     const totalDownloads = packages.reduce((s, p) => s + p.downloads, 0);
 
-    // OAuth token lives in the Account table (PrismaAdapter stores it there, not in ConnectedAccount)
-    const passportData = await db.passport.findUnique({ where: { id: passportId }, select: { userId: true } });
-    const oauthAccount = passportData
-      ? await db.account.findFirst({ where: { userId: passportData.userId, provider: "github" }, select: { access_token: true } })
-      : null;
-    const accessToken = oauthAccount?.access_token ?? githubConn.accessToken ?? undefined;
-
     // Fetch GitHub data
-    const stats = await fetchGitHubStats(githubConn.handle, accessToken ?? undefined);
+    const stats = await fetchGitHubStats(githubConn.handle, accessToken ?? githubConn.accessToken ?? undefined);
 
     // Determine verification level
     const verifications = await db.verification.findMany({ where: { passportId, verified: true } });
