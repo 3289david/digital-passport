@@ -1,26 +1,149 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #07080d;
+  --bg-surface: #0d0f18;
+  --bg-elevated: #131520;
+  --border: #1c2035;
+  --border-subtle: #141726;
+  --accent: #4361ee;
+  --accent-dim: #2d46cc;
+  --accent-glow: rgba(67, 97, 238, 0.15);
+  --green: #10b981;
+  --green-dim: #059669;
+  --amber: #f59e0b;
+  --red: #ef4444;
+  --text-primary: #e8eaf4;
+  --text-secondary: #8b92a8;
+  --text-muted: #4a506a;
+  --trust-gold: #f0b429;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--bg);
+  --color-foreground: var(--text-primary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans), Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--accent-glow);
+  color: var(--text-primary);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 var(--accent-glow); }
+  50% { box-shadow: 0 0 20px 4px var(--accent-glow); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes draw-circle {
+  from { stroke-dashoffset: 339.292; }
+  to { stroke-dashoffset: var(--target-offset); }
+}
+
+@keyframes grow-bar {
+  from { width: 0; }
+  to { width: var(--target-width); }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.6s ease forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease forwards;
+}
+
+.glass {
+  background: rgba(13, 15, 24, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.card-elevated {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.gradient-accent {
+  background: linear-gradient(135deg, #4361ee 0%, #7b2ff7 100%);
+}
+
+.gradient-trust {
+  background: linear-gradient(135deg, #4361ee 0%, #10b981 100%);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #e8eaf4 0%, #8b92a8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-accent {
+  background: linear-gradient(135deg, #4361ee 0%, #7b2ff7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.border-glow {
+  border: 1px solid rgba(67, 97, 238, 0.4);
+  box-shadow: 0 0 20px rgba(67, 97, 238, 0.1);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.trust-ring {
+  filter: drop-shadow(0 0 8px rgba(67, 97, 238, 0.4));
 }
