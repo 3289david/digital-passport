@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { PassportLogoIcon, GitHubIcon, GitLabIcon, NpmIcon, DockerIcon, PyPIIcon, HuggingFaceIcon, VercelIcon, CloudflareIcon, StackOverflowIcon, CratesIcon } from "@/components/icons/PlatformIcons";
+import { AppNav } from "@/components/AppNav";
+import { GitHubIcon, GitLabIcon, NpmIcon, DockerIcon, PyPIIcon, HuggingFaceIcon, VercelIcon, CloudflareIcon, StackOverflowIcon, CratesIcon } from "@/components/icons/PlatformIcons";
 
 const INTEGRATIONS = [
   { name: "GitHub", description: "Repos, stars, commits, pull requests, contribution graph, language breakdown.", icon: <GitHubIcon size={24} />, color: "#e8eaf4", status: "live" },
@@ -19,17 +20,7 @@ const INTEGRATIONS = [
 export default function IntegrationsPage() {
   return (
     <div className="min-h-screen" style={{ background: "var(--bg)" }}>
-      <nav className="fixed top-0 left-0 right-0 z-50 glass border-b" style={{ borderColor: "#1c2035" }}>
-        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <PassportLogoIcon size={28} />
-            <span className="font-semibold text-sm" style={{ color: "#e8eaf4" }}>Digital Passport</span>
-          </Link>
-          <Link href="/johndoe" className="text-sm font-medium px-4 py-1.5 rounded-full" style={{ background: "#4361ee", color: "#fff" }}>
-            View Demo
-          </Link>
-        </div>
-      </nav>
+      <AppNav minimal />
 
       <div className="max-w-5xl mx-auto px-6 pt-28 pb-24">
         <div className="text-center mb-14">

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PassportLogoIcon } from "@/components/icons/PlatformIcons";
+import { AppNav } from "@/components/AppNav";
 
 const SECTIONS = [
   { title: "Getting Started", links: [{ label: "Introduction", href: "/docs" }, { label: "Quick start", href: "/docs" }, { label: "Claiming your passport", href: "/how-it-works" }] },
@@ -11,17 +11,7 @@ const SECTIONS = [
 export default function DocsPage() {
   return (
     <div className="min-h-screen" style={{ background: "var(--bg)" }}>
-      <nav className="fixed top-0 left-0 right-0 z-50 glass border-b" style={{ borderColor: "#1c2035" }}>
-        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <PassportLogoIcon size={28} />
-            <span className="font-semibold text-sm" style={{ color: "#e8eaf4" }}>Digital Passport</span>
-          </Link>
-          <Link href="/docs/api" className="text-sm transition-colors" style={{ color: "#8b92a8" }}>
-            API Reference
-          </Link>
-        </div>
-      </nav>
+      <AppNav minimal />
 
       <div className="max-w-4xl mx-auto px-6 pt-28 pb-24">
         <h1 className="text-5xl font-bold mb-4" style={{ color: "#e8eaf4" }}>Documentation</h1>
