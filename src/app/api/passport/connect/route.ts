@@ -30,6 +30,36 @@ export async function POST(req: NextRequest) {
     create: { passportId: passport.id, platform, handle, url, accessToken },
   });
 
+  // Auto-fetch packages when npm or crates.io is connected (fire-and-forget)
+  if (platform === "npm" || platform === "crates") {
+    const passportId = passport.id;
+    (async () => {
+      try {
+        if (platform === "npm") {
+          const { fetchNpmPackages } = await import("@/lib/packages-fetch");
+          const pkgs = await fetchNpmPackages(handle);
+          for (const pkg of pkgs) {
+            await db.package.upsert({
+              where: { passportId_registry_name: { passportId, registry: "npm", name: pkg.name } },
+              update: { version: pkg.version, downloads: pkg.downloads, description: pkg.description, url: pkg.url },
+              create: { passportId, registry: "npm", name: pkg.name, version: pkg.version, downloads: pkg.downloads, description: pkg.description, url: pkg.url },
+            });
+          }
+        } else {
+          const { fetchCratesPackages } = await import("@/lib/packages-fetch");
+          const pkgs = await fetchCratesPackages(handle);
+          for (const pkg of pkgs) {
+            await db.package.upsert({
+              where: { passportId_registry_name: { passportId, registry: "crates", name: pkg.name } },
+              update: { version: pkg.version, downloads: pkg.downloads, description: pkg.description, url: pkg.url },
+              create: { passportId, registry: "crates", name: pkg.name, version: pkg.version, downloads: pkg.downloads, description: pkg.description, url: pkg.url },
+            });
+          }
+        }
+      } catch {}
+    })();
+  }
+
   return ok({ connection });
 }
 
