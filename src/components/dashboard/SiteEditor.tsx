@@ -14,6 +14,9 @@ interface SiteConfig {
   showBadges: boolean;
   showContact: boolean;
   accentColor: string;
+  customCss: string | null;
+  customHtml: string | null;
+  customJs: string | null;
 }
 
 const THEMES = [
@@ -35,6 +38,9 @@ export function SiteEditor({ site, username }: { site: SiteConfig | null; userna
     showBadges: site?.showBadges ?? true,
     showContact: site?.showContact ?? true,
     accentColor: site?.accentColor ?? "#4361ee",
+    customCss: site?.customCss ?? "",
+    customHtml: site?.customHtml ?? "",
+    customJs: site?.customJs ?? "",
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -144,6 +150,32 @@ export function SiteEditor({ site, username }: { site: SiteConfig | null; userna
           <span className="text-sm mono" style={{ color: "#e8eaf4" }}>{form.accentColor}</span>
         </div>
       </div>
+
+      {/* Custom code */}
+      <div className="card p-5 flex flex-col gap-4">
+        <div>
+          <h2 className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#8b92a8" }}>CUSTOM CODE</h2>
+          <p className="text-xs mt-1" style={{ color: "#4a506a" }}>Injected on your public site page only.</p>
+        </div>
+        <CodeField
+          label="Custom CSS"
+          value={form.customCss ?? ""}
+          onChange={(v) => set("customCss", v)}
+          placeholder={`/* Override any styles on your site */\n.passport-header { font-size: 2rem; }`}
+        />
+        <CodeField
+          label="Custom HTML"
+          value={form.customHtml ?? ""}
+          onChange={(v) => set("customHtml", v)}
+          placeholder={`<!-- Injected at the end of <body> -->\n<div class="my-banner">Hello!</div>`}
+        />
+        <CodeField
+          label="Custom JavaScript"
+          value={form.customJs ?? ""}
+          onChange={(v) => set("customJs", v)}
+          placeholder={`// Runs after page load\nconsole.log('Passport loaded');`}
+        />
+      </div>
     </div>
   );
 }
@@ -153,6 +185,23 @@ function Field({ label, value, onChange, placeholder }: { label: string; value: 
     <div className="flex flex-col gap-1.5">
       <label className="text-xs" style={{ color: "#8b92a8" }}>{label}</label>
       <input type="text" value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="px-3 py-2 rounded-lg text-sm outline-none" style={{ background: "#0d0f18", border: "1px solid #1c2035", color: "#e8eaf4" }} />
+    </div>
+  );
+}
+
+function CodeField({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string }) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <label className="text-xs" style={{ color: "#8b92a8" }}>{label}</label>
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        rows={5}
+        placeholder={placeholder}
+        spellCheck={false}
+        className="px-3 py-2 rounded-lg text-xs outline-none resize-y mono"
+        style={{ background: "#060810", border: "1px solid #1c2035", color: "#a8b4d0", lineHeight: 1.6, minHeight: 80 }}
+      />
     </div>
   );
 }

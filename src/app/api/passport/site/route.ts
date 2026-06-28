@@ -15,7 +15,9 @@ const schema = z.object({
   showBadges: z.boolean().optional(),
   showContact: z.boolean().optional(),
   accentColor: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
-  customCss: z.string().max(5000).optional(),
+  customCss: z.string().max(10000).optional(),
+  customHtml: z.string().max(10000).optional(),
+  customJs: z.string().max(10000).optional(),
 });
 
 export async function PUT(req: NextRequest) {

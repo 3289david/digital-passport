@@ -33,8 +33,15 @@ export async function syncPassport(passportId: string): Promise<void> {
     const packages = await db.package.findMany({ where: { passportId } });
     const totalDownloads = packages.reduce((s, p) => s + p.downloads, 0);
 
+    // OAuth token lives in the Account table (PrismaAdapter stores it there, not in ConnectedAccount)
+    const passportData = await db.passport.findUnique({ where: { id: passportId }, select: { userId: true } });
+    const oauthAccount = passportData
+      ? await db.account.findFirst({ where: { userId: passportData.userId, provider: "github" }, select: { access_token: true } })
+      : null;
+    const accessToken = oauthAccount?.access_token ?? githubConn.accessToken ?? undefined;
+
     // Fetch GitHub data
-    const stats = await fetchGitHubStats(githubConn.handle, githubConn.accessToken ?? undefined);
+    const stats = await fetchGitHubStats(githubConn.handle, accessToken ?? undefined);
 
     // Determine verification level
     const verifications = await db.verification.findMany({ where: { passportId, verified: true } });

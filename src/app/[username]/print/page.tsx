@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
+import { PrintButton } from "@/components/PrintButton";
 
 export default async function PrintPage({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
@@ -36,18 +37,7 @@ export default async function PrintPage({ params }: { params: Promise<{ username
       `}</style>
 
       {/* Print button (hidden when printing) */}
-      <div className="no-print fixed top-4 right-4 z-50 flex gap-2">
-        <button
-          onClick={() => window.print()}
-          className="px-4 py-2 rounded-lg text-sm font-medium"
-          style={{ background: "#4361ee", color: "#fff" }}
-        >
-          Print / Save PDF
-        </button>
-        <a href={`/${passport.username}`} className="px-4 py-2 rounded-lg text-sm font-medium" style={{ background: "#0d0f18", border: "1px solid #1c2035", color: "#e8eaf4" }}>
-          Back
-        </a>
-      </div>
+      <PrintButton username={passport.username} />
 
       {/* Print layout */}
       <div style={{ maxWidth: 800, margin: "0 auto", padding: "40px 32px", color: "#111", background: "#fff", minHeight: "100vh" }}>

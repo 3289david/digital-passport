@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 interface ProfileEditorProps {
   passport: {
@@ -12,10 +12,12 @@ interface ProfileEditorProps {
     twitterHandle: string | null;
     available: boolean;
     availabilityNote: string | null;
+    avatarUrl?: string | null;
   };
+  userImage?: string | null;
 }
 
-export function ProfileEditor({ passport }: ProfileEditorProps) {
+export function ProfileEditor({ passport, userImage }: ProfileEditorProps) {
   const [form, setForm] = useState({
     displayName: passport.displayName ?? "",
     title: passport.title ?? "",
@@ -29,6 +31,10 @@ export function ProfileEditor({ passport }: ProfileEditorProps) {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const [avatarSrc, setAvatarSrc] = useState<string | null>(passport.avatarUrl ?? userImage ?? null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [avatarError, setAvatarError] = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
 
   function set(key: keyof typeof form, val: string | boolean) {
     setForm((p) => ({ ...p, [key]: val }));
@@ -52,6 +58,30 @@ export function ProfileEditor({ passport }: ProfileEditorProps) {
     }
   }
 
+  async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatarUploading(true);
+    setAvatarError("");
+    try {
+      const fd = new FormData();
+      fd.append("avatar", file);
+      const res = await fetch("/api/passport/avatar", { method: "POST", body: fd });
+      const data = await res.json();
+      if (data.avatarUrl) {
+        setAvatarSrc(data.avatarUrl);
+      } else {
+        setAvatarError(data.error ?? "Upload failed");
+      }
+    } catch {
+      setAvatarError("Upload failed");
+    } finally {
+      setAvatarUploading(false);
+    }
+  }
+
+  const initials = (form.displayName || "?")[0].toUpperCase();
+
   return (
     <div className="flex flex-col gap-5">
       <div className="flex items-center justify-between">
@@ -70,6 +100,41 @@ export function ProfileEditor({ passport }: ProfileEditorProps) {
       </div>
 
       {error && <p className="text-sm" style={{ color: "#ef4444" }}>{error}</p>}
+
+      {/* Avatar */}
+      <div className="card p-5 flex items-center gap-5">
+        <div className="relative">
+          {avatarSrc ? (
+            <img src={avatarSrc} alt="Avatar" className="w-20 h-20 rounded-2xl object-cover" />
+          ) : (
+            <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-2xl font-bold" style={{ background: "linear-gradient(135deg,#4361ee,#7b2ff7)", color: "#fff" }}>
+              {initials}
+            </div>
+          )}
+          {avatarUploading && (
+            <div className="absolute inset-0 rounded-2xl flex items-center justify-center" style={{ background: "#00000080" }}>
+              <svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" strokeOpacity="0.3"/>
+                <path d="M12 2a10 10 0 0 1 10 10"/>
+              </svg>
+            </div>
+          )}
+        </div>
+        <div>
+          <p className="text-sm font-medium mb-2" style={{ color: "#e8eaf4" }}>Profile photo</p>
+          <button
+            onClick={() => fileRef.current?.click()}
+            disabled={avatarUploading}
+            className="text-xs px-3 py-1.5 rounded-lg disabled:opacity-40"
+            style={{ background: "#0d0f18", border: "1px solid #1c2035", color: "#8b92a8" }}
+          >
+            {avatarUploading ? "Uploading..." : "Change photo"}
+          </button>
+          <p className="text-xs mt-1.5" style={{ color: "#4a506a" }}>JPEG, PNG, WebP or GIF · max 2MB</p>
+          {avatarError && <p className="text-xs mt-1" style={{ color: "#ef4444" }}>{avatarError}</p>}
+          <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/gif,image/webp,image/avif" className="hidden" onChange={handleAvatarChange} />
+        </div>
+      </div>
 
       <div className="card p-6 flex flex-col gap-4">
         <div className="grid md:grid-cols-2 gap-4">

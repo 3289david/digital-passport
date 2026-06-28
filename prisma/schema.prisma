@@ -77,6 +77,7 @@ model Passport {
   available        Boolean @default(false)
   availabilityNote String?
   passportNumber   String  @unique @default(cuid())
+  avatarUrl        String? @db.Text
 
   // Computed scores (refreshed on sync)
   trustScore    Int @default(0)
@@ -385,6 +386,8 @@ model PassportSite {
   showContact  Boolean @default(true)
   accentColor  String  @default("#4361ee")
   customCss    String? @db.Text
+  customHtml   String? @db.Text
+  customJs     String? @db.Text
 
   passport Passport @relation(fields: [passportId], references: [id])
 

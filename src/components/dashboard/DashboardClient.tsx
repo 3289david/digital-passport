@@ -39,7 +39,8 @@ interface DashboardClientProps {
     badges: { type: string; label: string; earned: boolean; earnedAt: Date | null }[];
     verifications: { type: string; level: string; verified: boolean }[];
     experiences: { id: string; year: string; title: string; description: string | null; type: string; order: number; url: string | null }[];
-    site: { theme: string; title: string | null; headline: string | null; ctaText: string | null; ctaUrl: string | null; showProjects: boolean; showSkills: boolean; showBadges: boolean; showContact: boolean; accentColor: string } | null;
+    avatarUrl: string | null;
+    site: { theme: string; title: string | null; headline: string | null; ctaText: string | null; ctaUrl: string | null; showProjects: boolean; showSkills: boolean; showBadges: boolean; showContact: boolean; accentColor: string; customCss: string | null; customHtml: string | null; customJs: string | null } | null;
     apiKeys: { id: string; name: string; key: string; lastUsedAt: Date | null; createdAt: Date }[];
     trustLogs: { breakdown: unknown }[];
   };
@@ -121,8 +122,8 @@ export function DashboardClient({ passport, user }: DashboardClientProps) {
           <aside className="flex flex-col gap-2">
             {/* User card */}
             <div className="card p-4 flex flex-col items-center gap-3 text-center mb-2">
-              {user.image ? (
-                <img src={user.image} alt={user.name ?? ""} className="w-14 h-14 rounded-xl object-cover" />
+              {(passport.avatarUrl ?? user.image) ? (
+                <img src={passport.avatarUrl ?? user.image ?? ""} alt={user.name ?? ""} className="w-14 h-14 rounded-xl object-cover" />
               ) : (
                 <div className="w-14 h-14 rounded-xl flex items-center justify-center text-xl font-bold" style={{ background: "linear-gradient(135deg,#4361ee,#7b2ff7)", color: "#fff" }}>
                   {(passport.displayName ?? user.name ?? "?")[0].toUpperCase()}
@@ -181,7 +182,7 @@ export function DashboardClient({ passport, user }: DashboardClientProps) {
           {/* Main */}
           <main>
             {tab === "overview" && <OverviewTab passport={passport} onSync={triggerSync} syncing={syncing} />}
-            {tab === "profile" && <ProfileEditor passport={passport} />}
+            {tab === "profile" && <ProfileEditor passport={passport} userImage={user.image ?? null} />}
             {tab === "experience" && <ExperienceEditor experiences={passport.experiences} />}
             {tab === "skills" && <SkillsEditor skills={passport.skills} />}
             {tab === "projects" && <ProjectsEditor projects={passport.projects} />}
