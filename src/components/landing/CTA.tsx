@@ -47,7 +47,7 @@ export function CTA() {
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                href="/danu"
+                href="/johndoe"
                 className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-xl font-semibold transition-all"
                 style={{ background: "#4361ee", color: "#fff" }}
               >

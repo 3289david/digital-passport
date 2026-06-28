@@ -70,7 +70,7 @@ export function Hero() {
 
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
-                href="/danu"
+                href="/johndoe"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all"
                 style={{ background: "#4361ee", color: "#fff" }}
               >
@@ -162,7 +162,7 @@ function PassportCardMockup() {
               className="text-xs mono"
               style={{ color: "#4361ee" }}
             >
-              dev://danu
+              dev://johndoe
             </div>
           </div>
           <div
@@ -188,14 +188,14 @@ function PassportCardMockup() {
               color: "#fff",
             }}
           >
-            D
+            J
           </div>
           <div>
             <div className="font-bold text-lg" style={{ color: "#e8eaf4" }}>
-              Danu
+              John Doe
             </div>
             <div className="text-sm" style={{ color: "#8b92a8" }}>
-              Backend Engineer
+              Full Stack Engineer
             </div>
             <div className="text-xs flex items-center gap-1 mt-0.5" style={{ color: "#10b981" }}>
               <div className="rounded-full" style={{ width: 5, height: 5, background: "#10b981" }} />
@@ -281,7 +281,7 @@ function PassportCardMockup() {
           style={{ borderColor: "#1c2035" }}
         >
           <span className="text-xs mono" style={{ color: "#4a506a" }}>
-            p.krl.kr/danu
+            p.krl.kr/johndoe
           </span>
           <span
             className="text-xs mono px-2 py-0.5 rounded"

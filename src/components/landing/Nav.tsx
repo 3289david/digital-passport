@@ -19,35 +19,39 @@ export function Nav() {
 
         <div className="flex items-center gap-6">
           <Link
-            href="#features"
+            href="/features"
             className="text-sm transition-colors hidden md:block"
             style={{ color: "#8b92a8" }}
           >
             Features
           </Link>
           <Link
-            href="#platforms"
+            href="/integrations"
             className="text-sm transition-colors hidden md:block"
             style={{ color: "#8b92a8" }}
           >
             Integrations
           </Link>
           <Link
-            href="/danu"
+            href="/pricing"
+            className="text-sm transition-colors hidden md:block"
+            style={{ color: "#8b92a8" }}
+          >
+            Pricing
+          </Link>
+          <Link
+            href="/johndoe"
             className="text-sm transition-colors hidden md:block"
             style={{ color: "#8b92a8" }}
           >
             Demo
           </Link>
           <Link
-            href="/danu"
+            href="/johndoe"
             className="text-sm font-medium px-4 py-1.5 rounded-full transition-all"
-            style={{
-              background: "#4361ee",
-              color: "#fff",
-            }}
+            style={{ background: "#4361ee", color: "#fff" }}
           >
-            Get your Passport
+            View Demo
           </Link>
         </div>
       </div>
