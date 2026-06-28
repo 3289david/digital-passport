@@ -23,17 +23,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
-  session: { strategy: "database" },
+  session: { strategy: "jwt" },
   callbacks: {
-    async session({ session, user }) {
-      session.user.id = user.id;
-      const passport = await db.passport.findUnique({
-        where: { userId: user.id },
-        select: { username: true, trustScore: true },
-      });
-      if (passport) {
-        session.user.username = passport.username;
-        session.user.trustScore = passport.trustScore;
+    async jwt({ token, user }) {
+      if (user?.id) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token?.id) {
+        session.user.id = token.id as string;
+        const passport = await db.passport.findUnique({
+          where: { userId: token.id as string },
+          select: { username: true, trustScore: true },
+        });
+        if (passport) {
+          session.user.username = passport.username;
+          session.user.trustScore = passport.trustScore;
+        }
       }
       return session;
     },
